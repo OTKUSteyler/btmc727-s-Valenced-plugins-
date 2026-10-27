@@ -111,8 +111,11 @@
       "name": "GIF Roulette",
       "description": "Sends a random GIF from your favorites.",
       "author": "OTKUSteyler aka btmc727",
+      "contributors": [
+        "k1ng_op <641266820187160576> (https://github.com/k1ng0p \"GitHub\")"
+      ],
       "channels": {
-        "latest": "1.0.1"
+        "latest": "1.0.2"
       },
       "versions": {
         "1.0.0": {
@@ -132,6 +135,19 @@
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.1.zip",
           "sha256": "23e136ed122f9b096adc3ff1160f442b002774f607ef776daf1ab7e14adb94ed",
           "size": 1102,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.2": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.2.zip",
+          "sha256": "e9c878d830fb3f7ed3bd9198d5e8720d8a523df785a6d66d6d2ad641fd9c9f51",
+          "size": 1488,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
