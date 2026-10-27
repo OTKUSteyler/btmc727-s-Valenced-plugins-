@@ -1,90 +1,67 @@
+import { lookupModule } from '@valenced/modules/finders'
+import { withProps } from '@valenced/modules/finders/filters'
+import { after } from '@valenced/patcher'
+
 const NO_GIFS =
-    "❌ You don't have any favorite GIFs! Add some by favoriting GIFs in Discord first.";
+    "❌ You don't have any favorite GIFs! Add some by favoriting GIFs in Discord first."
 
-type AnyRecord = Record<string, any>;
-
-const runtime = (globalThis as AnyRecord) ?? {};
-
-function findByProps(...props: string[]) {
-    const seen = new Set<object>();
-    const visit = (value: unknown): unknown => {
-        if (!value || typeof value !== "object") return undefined;
-        if (seen.has(value as object)) return undefined;
-        seen.add(value as object);
-
-        if (props.every((prop) => (value as AnyRecord)[prop] !== undefined)) {
-            return value;
-        }
-
-        for (const child of Object.values(value as AnyRecord)) {
-            const found = visit(child);
-            if (found) return found;
-        }
-
-        return undefined;
-    };
-
-    return visit(runtime) ?? visit((runtime as AnyRecord).valenced) ?? visit((runtime as AnyRecord).Discord);
+function find<T>(...props: string[]): T | undefined {
+    const [exports, id] = lookupModule(withProps<T>(...props))
+    return id !== undefined ? exports : undefined
 }
-
-function registerCommand(command: AnyRecord) {
-    const api =
-        typeof (runtime as AnyRecord).registerCommand === "function"
-            ? (runtime as AnyRecord).registerCommand
-            : (runtime as AnyRecord).valenced?.registerCommand;
-
-    if (typeof api === "function") return api(command);
-    return () => undefined;
-}
-
-const messageUtil =
-    findByProps("sendMessage", "editMessage") ?? {
-        sendMessage: () => undefined,
-    };
-
-const UserSettingsActionCreators = findByProps("FrecencyUserSettingsActionCreators");
 
 function getMessage(): string {
+    const settings = find<any>('FrecencyUserSettingsActionCreators')
     const frecencyStore =
-        UserSettingsActionCreators?.FrecencyUserSettingsActionCreators?.getCurrentValue?.();
+        settings?.FrecencyUserSettingsActionCreators?.getCurrentValue?.()
 
-    const gifs = frecencyStore?.favoriteGifs?.gifs;
-    if (!gifs) return NO_GIFS;
+    const gifs = frecencyStore?.favoriteGifs?.gifs
+    if (!gifs) return NO_GIFS
 
-    const urls = Object.keys(gifs);
-    if (urls.length === 0) return NO_GIFS;
+    const urls = Object.keys(gifs)
+    if (urls.length === 0) return NO_GIFS
 
-    return urls[Math.floor(Math.random() * urls.length)];
+    return urls[Math.floor(Math.random() * urls.length)]
 }
 
-let unregisterCommand: (() => void) | undefined;
+export default plugin({
+    start({ cleanup, logger }) {
+        const messageUtil = find<any>('sendMessage', 'editMessage')
+        const commandsModule = find<any>('getBuiltInCommands')
 
-export default {
-    onLoad() {
-        unregisterCommand = registerCommand({
-            name: "gifroulette",
-            displayName: "GIF Roulette",
-            description: "Sends a random GIF from your favorites",
-            displayDescription: "Sends a random GIF from your favorites",
+        if (!messageUtil || !commandsModule) {
+            logger.error('GIF Roulette: could not find Discord message/command modules')
+            return
+        }
+
+        const command = {
+            id: 'gifroulette',
+            name: 'gifroulette',
+            displayName: 'GIF Roulette',
+            description: 'Sends a random GIF from your favorites',
+            displayDescription: 'Sends a random GIF from your favorites',
+            untranslatedName: 'gifroulette',
+            untranslatedDescription: 'Sends a random GIF from your favorites',
             options: [],
-            execute: async (_args, ctx) => {
-                if (!ctx?.channel?.id || typeof messageUtil.sendMessage !== "function") return;
-
+            execute: async (_args: unknown, ctx: { channel: { id: string } }) => {
                 messageUtil.sendMessage(
                     ctx.channel.id,
                     { content: getMessage() },
                     void 0,
                     { nonce: Date.now().toString() },
-                );
+                )
             },
-            applicationId: "-1",
+            applicationId: '-1',
             inputType: 1,
             type: 1,
-        });
-    },
+        }
 
-    onUnload() {
-        unregisterCommand?.();
-        unregisterCommand = undefined;
+
+        // built-in command list instead. The patch is removed when the plugin stops.
+        cleanup(
+            after(commandsModule, 'getBuiltInCommands', (_args, ret) =>
+                Array.isArray(ret) ? [...ret, command] : ret,
+            ),
+        )
     },
-};
+})
