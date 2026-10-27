@@ -112,13 +112,26 @@
       "description": "Sends a random GIF from your favorites.",
       "author": "OTKUSteyler aka btmc727",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.0.1"
       },
       "versions": {
         "1.0.0": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.0.zip",
           "sha256": "29b090529742c6d751525832bc8fba8ba5a833d6324d1a0ef9096c2d6978431c",
           "size": 1131,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.1": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.1.zip",
+          "sha256": "23e136ed122f9b096adc3ff1160f442b002774f607ef776daf1ab7e14adb94ed",
+          "size": 1102,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
