@@ -1,28 +1,22 @@
-import { storage } from "@vendetta/plugin";
-import { useProxy } from "@vendetta/storage";
-import { getAssetIDByName } from "@vendetta/ui/assets";
-import { Forms, General } from "@vendetta/ui/components";
-import { settings } from ".";
+import { Design } from '@valenced/discord/design'
+import { ScrollView } from 'react-native'
+import { getSettingsStorage } from './storage'
 
 export default function Settings() {
-    useProxy(storage);
+	const storage = getSettingsStorage()
+	const settings = storage.use()
 
-    return (
-        <General.ScrollView style={{ flex: 1 }}>
-            <Forms.FormSection title="Settings">
-                <Forms.FormRow
-                    label="Sound URL"
-                    leading={<Forms.FormIcon source={getAssetIDByName("ic_link")} />}
-                />
-                <Forms.FormInput
-                    title=""
-                    keyboardType="url"
-                    placeholder="https://link.to/sound.mp3"
-                    value={settings.customUrl}
-                    onChange={(x: string) => (settings.customUrl = x)}
-                    style={{ marginTop: -25, marginHorizontal: 12 }}
-                />
-            </Forms.FormSection>
-        </General.ScrollView>
-    );
+	return (
+		<ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+			<Design.TextInput
+				label="Sound URL"
+				description="Leave empty to use the default sound. Applies after a restart."
+				placeholder="https://link.to/sound.mp3"
+				value={settings?.customUrl ?? ''}
+				onChange={(value: string) => {
+					storage.set({ customUrl: value })
+				}}
+			/>
+		</ScrollView>
+	)
 }
