@@ -34,7 +34,7 @@
         "k1ng_op <641266820187160576> (https://github.com/k1ng0p \"GitHub\")"
       ],
       "channels": {
-        "latest": "1.0.4"
+        "latest": "1.0.5"
       },
       "versions": {
         "1.0.0": {
@@ -92,6 +92,19 @@
         "1.0.4": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.4.zip",
           "sha256": "27f3302ac4340b74059b5dee25b6842c254796a3ddec7dbdd999284670fc4f22",
+          "size": 1488,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.5": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.5.zip",
+          "sha256": "bb2a92c90a82a8f96fc17b0a5fd8db78fad344e6c40f40374be5603c9bba998f",
           "size": 1488,
           "dependencies": {
             "valenced.api": {
