@@ -3,6 +3,29 @@
   "name": "btmc727-s-Valenced-plugins-",
   "description": "Just ports from Next For Valenced.",
   "plugins": {
+    "com.autumnvn.notypinganimation": {
+      "name": "NoTypingAnimation",
+      "description": "Disables the CPU-intensive typing dots animation. A plugin port from Vencord.",
+      "author": "AutumnVN, btmc727",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.autumnvn.notypinganimation@1.0.0.zip",
+          "sha256": "6fa92561ca0e7183b711f6dd6f492cc75ef4fefc78c60a4c12bd5e71cdcfcd14",
+          "size": 649,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    },
     "com.otkusteyler.gifroulette": {
       "name": "GIF Roulette",
       "description": "Sends a random GIF from your favorites.",
@@ -44,6 +67,32 @@
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.gifroulette@1.0.2.zip",
           "sha256": "e9c878d830fb3f7ed3bd9198d5e8720d8a523df785a6d66d6d2ad641fd9c9f51",
           "size": 1488,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    },
+    "com.otkusteyler.loginsound": {
+      "name": "LoginSound",
+      "description": "ディスコード!",
+      "author": "Rico040",
+      "contributors": [
+        "OTKUSteyler aka btmc727 (Valenced port)"
+      ],
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.loginsound@1.0.0.zip",
+          "sha256": "209f22c5c3f0dd1de2a383cae68347eb87504c9b7a4401b2c2b5eb01a65d7651",
+          "size": 1167,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
