@@ -1,5 +1,5 @@
-import { ReactNative } from "@vendetta/metro/common";
-import { storage } from "@vendetta/plugin";
+import { ReactNative } from "@valenced/metro/common";
+import { storage } from "@valenced/plugin";
 import Settings from "./Settings";
 
 const { DCDSoundManager } = ReactNative.NativeModules;
