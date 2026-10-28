@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "id": "com.otkusteyler.loginsound",
+  "name": "LoginSound",
+  "description": "ディスコード!",
+  "author": "Rico040",
+  "contributors": ["OTKUSteyler aka btmc727 (Valenced port)"],
+  "version": "1.0.0",
+  "dependencies": {
+    "valenced.api": { "version": ">=1 <2" },
+    "discord": { "version": "*" }
+  },
+  "dist": {
+    "script": "index.js"
+  }
+}
