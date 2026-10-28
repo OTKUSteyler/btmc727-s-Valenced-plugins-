@@ -8,13 +8,26 @@
       "description": "Disables the CPU-intensive typing dots animation. A plugin port from Vencord.",
       "author": "AutumnVN, btmc727",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.0.1"
       },
       "versions": {
         "1.0.0": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.autumnvn.notypinganimation@1.0.0.zip",
           "sha256": "6fa92561ca0e7183b711f6dd6f492cc75ef4fefc78c60a4c12bd5e71cdcfcd14",
           "size": 649,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.1": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.autumnvn.notypinganimation@1.0.1.zip",
+          "sha256": "bed94c82443d5cb0f64e9c8eaf5261ce583340d28115b02c52eeb523cd89fcab",
+          "size": 648,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
