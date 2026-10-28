@@ -99,12 +99,25 @@
         "OTKUSteyler aka btmc727 (Valenced port)"
       ],
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.0.1"
       },
       "versions": {
         "1.0.0": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.loginsound@1.0.0.zip",
           "sha256": "209f22c5c3f0dd1de2a383cae68347eb87504c9b7a4401b2c2b5eb01a65d7651",
+          "size": 1167,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.1": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.otkusteyler.loginsound@1.0.1.zip",
+          "sha256": "7a94ab359aac775ba526045a3054fd9fc82c0a6c30dde0ccc191c1d3fd432afd",
           "size": 1167,
           "dependencies": {
             "valenced.api": {
