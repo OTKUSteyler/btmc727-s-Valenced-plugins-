@@ -1,57 +1,52 @@
-import { ReactNative } from "@valenced/metro/common";
-import { storage } from "@valenced/plugin";
-import Settings from "./Settings";
+import { getNativeModule } from '@valenced/modules/native'
+import Settings from './Settings'
+import { getSettingsStorage } from './storage'
 
-const { DCDSoundManager } = ReactNative.NativeModules;
-
-export const settings: {
-    customUrl?: string;
-} = storage;
-
-const DEFAULT_URL = "https://raw.githubusercontent.com/Rico040/meine-themen/master/sounds/discordo-discord.mp3";
-const soundId = 6970;
-let soundDuration = -1;
-
-// Function to prepare the sound
-const prepareSound = function () {
-    return new Promise<any>(function (resolve) {
-        const soundUrl = settings.customUrl ? settings.customUrl : DEFAULT_URL;
-        DCDSoundManager.prepare(soundUrl, "music", soundId, function (error: any, sound: any) {
-            resolve(sound);
-        });
-    });
-};
-
-// Variables to manage sound playback state
-let timeoutId: ReturnType<typeof setTimeout> | null = null;
-let isPlaying = false;
-
-// Function to play the sound, thanks to moyai obfuscated code
-async function playSound() {
-    if (isPlaying) {
-        if (timeoutId != null) clearTimeout(timeoutId);
-        DCDSoundManager.stop(soundId);
-        isPlaying = false;
-    }
-    isPlaying = true;
-    await DCDSoundManager.play(soundId);
-    timeoutId = setTimeout(function () {
-        isPlaying = false;
-        DCDSoundManager.stop(soundId);
-        timeoutId = null;
-    }, soundDuration);
+interface SoundManager {
+	prepare(
+		url: string,
+		category: string,
+		id: number,
+		callback: (error: unknown, sound?: { duration: number }) => void,
+	): void
+	play(id: number): Promise<unknown> | unknown
+	stop(id: number): void
 }
-let isPrepared = false;
 
-export default {
-    onLoad: () => {
-        if (!isPrepared) {
-            prepareSound().then(function (sound) {
-                isPrepared = true;
-                soundDuration = sound.duration;
-                playSound();
-            });
-        }
-    },
-    settings: Settings
-};
+const DEFAULT_URL =
+	'https://raw.githubusercontent.com/Rico040/meine-themen/master/sounds/discordo-discord.mp3'
+const SOUND_ID = 6970
+
+export default plugin({
+	SettingsComponent: Settings,
+
+	async start({ cleanup }) {
+		const SoundManager = getNativeModule<SoundManager>('DCDSoundManager')
+		if (!SoundManager) return
+
+		let timeoutId: ReturnType<typeof setTimeout> | null = null
+		let isPlaying = false
+
+		function stopSound() {
+			if (timeoutId != null) clearTimeout(timeoutId)
+			timeoutId = null
+			if (isPlaying) SoundManager!.stop(SOUND_ID)
+			isPlaying = false
+		}
+
+		cleanup(stopSound)
+
+		const settings = await getSettingsStorage().get()
+		const soundUrl = settings.customUrl || DEFAULT_URL
+
+		SoundManager.prepare(soundUrl, 'music', SOUND_ID, async (_error, sound) => {
+			if (!sound) return
+
+			stopSound()
+			isPlaying = true
+			await SoundManager.play(SOUND_ID)
+
+			timeoutId = setTimeout(stopSound, sound.duration)
+		})
+	},
+})
