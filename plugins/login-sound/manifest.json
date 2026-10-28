@@ -11,6 +11,6 @@
     "discord": { "version": "*" }
   },
   "dist": {
-    "script": "index.js"
+    "script": "index.ts"
   }
 }
