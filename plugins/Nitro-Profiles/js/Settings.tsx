@@ -10,28 +10,27 @@ import {
   Linking,
   useColorScheme,
 } from 'react-native'
+import { fetchBG, fetchPFP, getCustomAvatar, getLastError } from './data'
 import { getSettingsStorage } from './storage'
 import type { PluginSettings } from './types'
 import { DEFAULT_SETTINGS } from './types'
 
-interface Props {
-  onReloadBG: () => Promise<boolean>
-  onReloadPFP: () => Promise<boolean>
-}
-
-function resolveCurrentAvatar(): string | undefined {
+function resolveCurrentUser(): any {
   try {
     const { finders } = (globalThis as any).valenced.modules
     const userModule = finders.lookupModule(finders.filters.withProps("getCurrentUser"))
 
-    const currentUser = userModule?.getCurrentUser?.() || Object.values(userModule || {}).find((store: any) => typeof store?.getCurrentUser === "function")?.getCurrentUser()
-    return currentUser?.avatar ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128` : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(currentUser?.id || "0") >> 22n) % 5n)}.png`
+    return userModule?.getCurrentUser?.() || Object.values(userModule || {}).find((store: any) => typeof store?.getCurrentUser === "function")?.getCurrentUser()
   } catch {
     return undefined
   }
 }
 
-export default function Settings({ onReloadBG, onReloadPFP }: Props) {
+function discordAvatarUrl(currentUser: any): string {
+  return currentUser?.avatar ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128` : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(currentUser?.id || "0") >> 22n) % 5n)}.png`
+}
+
+export default function Settings() {
   const scheme = useColorScheme()
   const dark = scheme !== 'light'
   const colors = useMemo(() => ({
@@ -47,16 +46,24 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
   const [settings, setSettings] = useState<PluginSettings>(DEFAULT_SETTINGS)
   const [busy, setBusy] = useState<'bg' | 'pfp' | null>(null)
   const [status, setStatus] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState<string>()
+  const [currentUser, setCurrentUser] = useState<any>()
+  const [pfpVersion, setPfpVersion] = useState(0)
 
   useEffect(() => {
     let alive = true
     getSettingsStorage().get().then(value => {
       if (alive) setSettings({ ...DEFAULT_SETTINGS, ...value })
     }).catch(() => {})
-    setAvatarUrl(resolveCurrentAvatar())
+    setCurrentUser(resolveCurrentUser())
     return () => { alive = false }
   }, [])
+
+  // Prefer the UserPFP avatar when it's enabled and the user has one; otherwise use the Discord avatar.
+  const avatarUrl = useMemo(() => {
+    if (!currentUser) return undefined
+    const custom = settings.userpfpEnabled && currentUser.id ? getCustomAvatar(currentUser.id, true) : undefined
+    return custom ?? discordAvatarUrl(currentUser)
+  }, [currentUser, settings.userpfpEnabled, pfpVersion])
 
   async function update(patch: Partial<PluginSettings>) {
     const next = { ...settings, ...patch }
@@ -71,11 +78,13 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
   async function reload(which: 'bg' | 'pfp') {
     setBusy(which)
     setStatus('')
+    const label = which === 'bg' ? 'Banner collection' : 'Avatar collection'
     try {
-      const ok = which === 'bg' ? await onReloadBG() : await onReloadPFP()
-      setStatus(`${which === 'bg' ? 'Banner collection' : 'Avatar collection'}: ${ok ? 'reloaded' : 'reload failed'}`)
-    } catch {
-      setStatus(`${which === 'bg' ? 'Banner collection' : 'Avatar collection'}: reload failed`)
+      const ok = which === 'bg' ? await fetchBG() : await fetchPFP()
+      if (which === 'pfp') setPfpVersion(v => v + 1)
+      setStatus(ok ? `${label}: reloaded` : `${label}: reload failed (${getLastError() || 'unknown error'})`)
+    } catch (error) {
+      setStatus(`${label}: reload failed (${error instanceof Error ? error.message : String(error)})`)
     } finally {
       setBusy(null)
     }
@@ -133,4 +142,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-      }
+}
