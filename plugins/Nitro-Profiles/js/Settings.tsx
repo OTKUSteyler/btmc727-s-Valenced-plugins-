@@ -10,7 +10,7 @@ import {
   Linking,
   useColorScheme,
 } from 'react-native'
-import { fetchBG, fetchPFP, getCustomAvatar, getLastError } from './data'
+import { fetchBG, fetchPFP, getCustomAvatar, getCustomBanner, getLastError } from './data'
 import { getSettingsStorage } from './storage'
 import type { PluginSettings } from './types'
 import { DEFAULT_SETTINGS } from './types'
@@ -48,6 +48,7 @@ export default function Settings() {
   const [status, setStatus] = useState('')
   const [currentUser, setCurrentUser] = useState<any>()
   const [pfpVersion, setPfpVersion] = useState(0)
+  const [bgVersion, setBgVersion] = useState(0)
 
   useEffect(() => {
     let alive = true
@@ -64,6 +65,12 @@ export default function Settings() {
     const custom = settings.userpfpEnabled && currentUser.id ? getCustomAvatar(currentUser.id, true) : undefined
     return custom ?? discordAvatarUrl(currentUser)
   }, [currentUser, settings.userpfpEnabled, pfpVersion])
+
+  // USRBG banner for the current user, shown as a preview in the Nitro Banner section.
+  const bannerUrl = useMemo(() => {
+    if (!settings.userbgEnabled || !currentUser?.id) return undefined
+    return getCustomBanner(currentUser.id)
+  }, [currentUser, settings.userbgEnabled, bgVersion])
 
   async function update(patch: Partial<PluginSettings>) {
     const next = { ...settings, ...patch }
@@ -82,6 +89,7 @@ export default function Settings() {
     try {
       const ok = which === 'bg' ? await fetchBG() : await fetchPFP()
       if (which === 'pfp') setPfpVersion(v => v + 1)
+      else setBgVersion(v => v + 1)
       setStatus(ok ? `${label}: reloaded` : `${label}: reload failed (${getLastError() || 'unknown error'})`)
     } catch (error) {
       setStatus(`${label}: reload failed (${error instanceof Error ? error.message : String(error)})`)
@@ -110,6 +118,11 @@ export default function Settings() {
 
       <View style={sectionStyle}>
         <Text style={headingStyle}>Nitro Banner</Text>
+        {bannerUrl
+          ? <Image source={{ uri: bannerUrl }} resizeMode="cover" style={{ width: '100%', height: 120, borderRadius: 10, backgroundColor: colors.border }} />
+          : <View style={{ width: '100%', height: 120, borderRadius: 10, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 }}>
+              <Text style={{ color: colors.muted, fontSize: 14, textAlign: 'center' }}>{settings.userbgEnabled ? 'No USRBG banner found for your account' : 'Custom banners are turned off'}</Text>
+            </View>}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <View style={{ flex: 1, gap: 3 }}>
             <Text style={{ color: colors.text, fontSize: 15 }}>Community profile banners</Text>
@@ -132,7 +145,7 @@ export default function Settings() {
           </View>
           <Switch value={settings.userpfpEnabled} onValueChange={value => void update({ userpfpEnabled: value })} />
         </View>
-        <Pressable onPress={() => void Linking.openURL('https://userpfp.github.io/UserPFP/#using-userpfp')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Avatar community (UserPFP)</Text></Pressable>
+        <Pressable onPress={() => void Linking.openURL('https://discord.gg/userpfp-1129784704267210844')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Avatar community (UserPFP)</Text></Pressable>
         <Pressable onPress={() => void reload('pfp')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
           <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'pfp' ? 'Reloading…' : 'Reload avatar collection'}</Text>
         </Pressable>
@@ -142,4 +155,4 @@ export default function Settings() {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-}
+                            }
