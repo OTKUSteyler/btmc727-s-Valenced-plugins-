@@ -11,6 +11,14 @@ export function getBGData(): UserBGData | null {
 	return bgData
 }
 
+/** USRBG banner URL for a user id, if the collection has one. */
+export function getCustomBanner(id: string): string | undefined {
+	if (!bgData) return undefined
+	const entry = bgData.users[id]
+	if (!entry) return undefined
+	return `${bgData.endpoint}/${bgData.bucket}/${bgData.prefix}${id}?${entry}`
+}
+
 export function clearData(): void {
 	bgData = null
 	pfpData = null
@@ -72,4 +80,4 @@ export async function fetchPFP(): Promise<boolean> {
 		console.error('[Nitro Profiles] UserPFP database reload failed:', error)
 		return false
 	}
-  }
+	}
