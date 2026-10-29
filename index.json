@@ -200,7 +200,7 @@
       "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
       "author": "btmc727",
       "channels": {
-        "latest": "1.0.8"
+        "latest": "1.0.9"
       },
       "versions": {
         "1.0.4": {
@@ -259,6 +259,19 @@
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.8.zip",
           "sha256": "db68b8ab873984d0e549e1dc5760e1c7c6de22a1fb73649adf7e9c4aaf975dbb",
           "size": 3036,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.9": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.9.zip",
+          "sha256": "c2a20aa0a7e39765ff9cc7d51741d60a416de4cfe1bd57643b4ab0e4b71101ce",
+          "size": 3015,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
