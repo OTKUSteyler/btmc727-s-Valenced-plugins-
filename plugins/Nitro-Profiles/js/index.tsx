@@ -9,7 +9,7 @@ let bgData: UserBGData | null = null
 let pfpData: UserPFPData | null = null
 
 const BG_URL = 'https://usrbg.is-hardly.online/users'
-const PFP_URL = 'https://userpfp.github.io/UserPFP/source/data.json'
+const PFP_URL = 'https://raw.githubusercontent.com/UserPFP/UserPFP/main/source/data.json'
 
 async function fetchBG(): Promise<UserBGData | null> {
 	try {
@@ -24,13 +24,19 @@ async function fetchBG(): Promise<UserBGData | null> {
 
 async function fetchPFP(): Promise<UserPFPData | null> {
 	try {
-		const response = await fetch(PFP_URL, {
-			headers: { 'cache-control': 'max-age=1800' },
-		})
-		if (!response.ok) throw new Error(`UserPFP request failed: ${response.status}`)
-		pfpData = await response.json()
+		// GitHub Pages may fail in some Discord client networking contexts; fetch
+		// the canonical raw database and use the same `avatars` map as UserPFP.
+		const response = await fetch(PFP_URL, { cache: 'no-store' })
+		if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`)
+		const data: unknown = await response.json()
+		if (!data || typeof data !== 'object' || !('avatars' in data) ||
+			!data.avatars || typeof data.avatars !== 'object' || Array.isArray(data.avatars)) {
+			throw new Error('Unexpected database format: missing avatars map')
+		}
+		pfpData = data as UserPFPData
 		return pfpData
-	} catch {
+	} catch (error) {
+		console.error('[Nitro Profiles] UserPFP database reload failed:', error)
 		return null
 	}
 }
