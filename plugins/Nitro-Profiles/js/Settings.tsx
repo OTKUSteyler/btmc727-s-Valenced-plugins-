@@ -79,9 +79,9 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
     setStatus('')
     try {
       const ok = which === 'bg' ? await onReloadBG() : await onReloadPFP()
-      setStatus(`${which === 'bg' ? 'UserBG' : 'UserPFP'}: ${ok ? 'database reloaded' : 'reload failed'}`)
+      setStatus(`${which === 'bg' ? 'Banner collection' : 'Avatar collection'}: ${ok ? 'reloaded' : 'reload failed'}`)
     } catch {
-      setStatus(`${which === 'bg' ? 'UserBG' : 'UserPFP'}: reload failed`)
+      setStatus(`${which === 'bg' ? 'Banner collection' : 'Avatar collection'}: reload failed`)
     } finally {
       setBusy(null)
     }
@@ -95,42 +95,42 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.background }} contentContainerStyle={{ padding: 16, gap: 14 }}>
       <View style={{ gap: 6 }}>
-        <Text style={{ color: colors.text, fontSize: 22, fontWeight: '800' }}>UserBG + UserPFP</Text>
-        <Text style={bodyStyle}>Custom profile banners from USRBG and custom avatars from UserPFP.</Text>
+        <Text style={{ color: colors.text, fontSize: 24, fontWeight: '800' }}>Nitro Profiles</Text>
+        <Text style={bodyStyle}>Personalize profiles with community banner and avatar collections.</Text>
       </View>
 
       <View style={sectionStyle}>
-        <Text style={headingStyle}>UserBG</Text>
+        <Text style={headingStyle}>Nitro Banner</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <View style={{ flex: 1, gap: 3 }}>
-            <Text style={{ color: colors.text, fontSize: 15 }}>Custom profile banners</Text>
-            <Text style={bodyStyle}>Show community-submitted profile banners.</Text>
+            <Text style={{ color: colors.text, fontSize: 15 }}>Community profile banners</Text>
+            <Text style={bodyStyle}>Enable custom banners from the community collection.</Text>
           </View>
           <Switch value={settings.userbgEnabled} onValueChange={value => void update({ userbgEnabled: value })} />
         </View>
         <Pressable onPress={() => void reload('bg')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
-          <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'bg' ? 'Reloading…' : 'Reload UserBG database'}</Text>
+          <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'bg' ? 'Reloading…' : 'Reload banner collection'}</Text>
         </Pressable>
       </View>
 
       <View style={sectionStyle}>
-        <Text style={headingStyle}>UserPFP</Text>
+        <Text style={headingStyle}>Nitro Avatar</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           {avatarUrl ? <Image source={{ uri: avatarUrl }} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.border }} /> : <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: colors.text, fontSize: 18 }}>?</Text></View>}
           <View style={{ flex: 1, gap: 3 }}>
-            <Text style={{ color: colors.text, fontSize: 15, fontWeight: '600' }}>Your Discord avatar</Text>
-            <Text style={bodyStyle}>Preview of your current account avatar.</Text>
+            <Text style={{ color: colors.text, fontSize: 15, fontWeight: '600' }}>Your current Discord avatar</Text>
+            <Text style={bodyStyle}>Preview of the avatar used by your account.</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <View style={{ flex: 1, gap: 3 }}>
-            <Text style={{ color: colors.text, fontSize: 15 }}>Custom profile avatars</Text>
-            <Text style={bodyStyle}>Use UserPFP community avatars. A Discord reload may be needed after toggling.</Text>
+            <Text style={{ color: colors.text, fontSize: 15 }}>Community profile avatars</Text>
+            <Text style={bodyStyle}>Enable custom avatars from the community collection. Restart Discord if changes don't appear.</Text>
           </View>
           <Switch value={settings.userpfpEnabled} onValueChange={value => void update({ userpfpEnabled: value })} />
         </View>
         <Pressable onPress={() => void reload('pfp')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
-          <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'pfp' ? 'Reloading…' : 'Reload UserPFP database'}</Text>
+          <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'pfp' ? 'Reloading…' : 'Reload avatar collection'}</Text>
         </Pressable>
       </View>
 
@@ -138,4 +138,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-}
+      }
