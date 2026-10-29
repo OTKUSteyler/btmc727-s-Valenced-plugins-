@@ -196,17 +196,30 @@
       }
     },
     "com.valenced.userbg-userpfp": {
-      "name": "UserBG + UserPFP",
+      "name": "Nitro-Profiles",
       "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
       "author": "btmc727",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.0.1"
       },
       "versions": {
         "1.0.0": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.userbg-userpfp@1.0.0.zip",
           "sha256": "054a5cc0eba118ba29a04cf90c6016141566de538f0303c74aa5bf0cb93b7eab",
           "size": 2053,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.1": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.userbg-userpfp@1.0.1.zip",
+          "sha256": "0f47131669fa85cf819718539bedeef219c3fa6ec6130f10ffc62c469adf1093",
+          "size": 2055,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
