@@ -195,39 +195,12 @@
         }
       }
     },
-    "com.theunrealzaka.favouriteanything": {
-      "name": "FavouriteAnything",
-      "description": "Adds the favourite button to ALL media in the image viewer, not just GIFs. A plugin port from Equicord.",
-      "author": "TheUnrealZaka",
-      "contributors": [
-        "nin0dev & davri (Equicord desktop plugin)",
-        "OTKUSteyler aka btmc727 (Valenced port)"
-      ],
-      "channels": {
-        "latest": "1.0.0"
-      },
-      "versions": {
-        "1.0.0": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.theunrealzaka.favouriteanything@1.0.0.zip",
-          "sha256": "247d3fc3e4e3f8dbfdceca18785ddfe417ead8f19423a834c91033b73a3798c9",
-          "size": 3626,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        }
-      }
-    },
     "com.valenced.nitro-profiles": {
       "name": "Nitro-Profiles",
       "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
-      "author": "btmc727 & knifecodez",
+      "author": "btmc727",
       "channels": {
-        "latest": "1.1.3"
+        "latest": "1.0.6"
       },
       "versions": {
         "1.0.4": {
@@ -260,97 +233,6 @@
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.6.zip",
           "sha256": "1216bb3af16634ff08c5c6284b19d4b82501273fce0924f5c3ee3c3807891e3a",
           "size": 3084,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.0.7": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.7.zip",
-          "sha256": "ab705475cc79d98d48c1e29f20cec5145bc47d62f5a090829d8fec322c458caa",
-          "size": 3036,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.0.8": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.8.zip",
-          "sha256": "db68b8ab873984d0e549e1dc5760e1c7c6de22a1fb73649adf7e9c4aaf975dbb",
-          "size": 3036,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.0.9": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.0.9.zip",
-          "sha256": "c2a20aa0a7e39765ff9cc7d51741d60a416de4cfe1bd57643b4ab0e4b71101ce",
-          "size": 3015,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.1.0": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.1.0.zip",
-          "sha256": "d1846b498f606a827a2b676e41032de23389d8d2ba6170c022644bdc34a7441a",
-          "size": 2980,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.1.1": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.1.1.zip",
-          "sha256": "7e7a5f5bc2ac0e03a09738386b0a662cea3a2bffaad363ebd404f088485b5590",
-          "size": 3102,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.1.2": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.1.2.zip",
-          "sha256": "7388d843db87e3fcd2be32e7ad80c587c9b969e1474ebfb955c4c38599ece85b",
-          "size": 3096,
-          "dependencies": {
-            "valenced.api": {
-              "version": ">=1 <2"
-            },
-            "discord": {
-              "version": "*"
-            }
-          }
-        },
-        "1.1.3": {
-          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.nitro-profiles@1.1.3.zip",
-          "sha256": "679524a2deaf4ccbf1c8d6613b0785ca4243f54148d544147e7748a741943ecf",
-          "size": 3297,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"
