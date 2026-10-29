@@ -1,13 +1,18 @@
 import { getModules } from '@valenced/modules/finders'
 import { withProps } from '@valenced/modules/finders/filters'
 import { instead } from '@valenced/patcher'
-import { clearData, fetchBG, fetchPFP, getBGData } from './data'
+import { clearData, fetchBG, fetchPFP, getBGData, getCustomAvatar } from './data'
 import Settings from './Settings'
 import { getSettingsStorage } from './storage'
 import { DEFAULT_SETTINGS, type PluginSettings } from './types'
 
 interface BannerModule {
 	getUserBannerURL(user: any): any
+}
+
+interface AvatarModule {
+	getUserAvatarURL(user: any, animate?: boolean): any
+	getUserAvatarSource(user: any, animate?: boolean): any
 }
 
 export default plugin({
@@ -19,6 +24,7 @@ export default plugin({
 
 		// Keep this state fresh when settings are changed from the settings screen.
 		const isBGEnabled = () => settings.userbgEnabled
+		const isPFPEnabled = () => settings.userpfpEnabled
 
 		await Promise.all([fetchBG(), fetchPFP()])
 
@@ -40,6 +46,40 @@ export default plugin({
 					},
 				)
 				cleanup(unpatch)
+			}),
+			getModules(withProps<AvatarModule>('getUserAvatarURL', 'getUserAvatarSource'), mod => {
+				const unpatchURL = instead(
+					mod as any,
+					'getUserAvatarURL',
+					(args: any[], original: (...args: any[]) => any) => {
+						const [user, animate] = args
+						if (isPFPEnabled() && user?.id) {
+							const custom = getCustomAvatar(user.id, !animate)
+							if (custom) return custom
+						}
+						return original.apply(mod, args)
+					},
+				)
+
+				const unpatchSource = instead(
+					mod as any,
+					'getUserAvatarSource',
+					(args: any[], original: (...args: any[]) => any) => {
+						const [user, animate] = args
+						const result = original.apply(mod, args)
+						if (!isPFPEnabled() || !user?.id) return result
+
+						const custom = getCustomAvatar(user.id, !animate)
+						if (!custom) return result
+						if (result && typeof result === 'object' && typeof result.uri === 'string') {
+							return { ...result, uri: custom }
+						}
+						if (typeof result === 'number') return { uri: custom }
+						return result
+					},
+				)
+
+				cleanup(unpatchURL, unpatchSource)
 			}),
 			() => {
 				clearData()
