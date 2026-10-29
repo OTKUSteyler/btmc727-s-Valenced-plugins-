@@ -4,7 +4,7 @@
     "name": "Nitro-Profiles",
     "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
     "author": "btmc727",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "dependencies": {
         "valenced.api": {
             "version": ">=1 <2"
