@@ -21,18 +21,11 @@ interface Props {
 
 function resolveCurrentAvatar(): string | undefined {
   try {
-    const { finders } = (globalThis as any).revenge.modules
-    const userModule = finders.lookupModule(finders.filters.withProps('getCurrentUser'))
-    const currentUser =
-      userModule?.getCurrentUser?.() ??
-      Object.values(userModule ?? {}).find(
-        (store: any) => typeof store?.getCurrentUser === 'function',
-      )?.getCurrentUser()
+    const { finders } = (globalThis as any).valenced.modules
+    const userModule = finders.lookupModule(finders.filters.withProps("getCurrentUser"))
 
-    if (!currentUser?.id) return undefined
-    return currentUser.avatar
-      ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.${currentUser.avatar.startsWith('a_') ? 'gif' : 'png'}?size=128`
-      : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(currentUser.id) >> 22n) % 6n)}.png`
+    const currentUser = userModule?.getCurrentUser?.() || Object.values(userModule || {}).find((store: any) => typeof store?.getCurrentUser === "function")?.getCurrentUser()
+    return currentUser?.avatar ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128` : `https://cdn.discordapp.com/embed/avatars/${Number((BigInt(currentUser?.id || "0") >> 22n) % 5n)}.png`
   } catch {
     return undefined
   }
@@ -140,4 +133,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-                }
+      }
