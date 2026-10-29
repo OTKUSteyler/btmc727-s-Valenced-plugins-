@@ -139,4 +139,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-    }
+}
