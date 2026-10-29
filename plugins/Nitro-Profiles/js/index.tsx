@@ -1,7 +1,6 @@
 import { getModules } from '@valenced/modules/finders'
 import { withProps } from '@valenced/modules/finders/filters'
 import { instead } from '@valenced/patcher'
-import Settings from './Settings'
 import { clearData, fetchBG, fetchPFP, getBGData } from './data'
 import Settings from './Settings'
 import { getSettingsStorage } from './storage'
