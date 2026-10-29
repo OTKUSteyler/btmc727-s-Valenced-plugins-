@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Pressable,
+  Linking,
   useColorScheme,
 } from 'react-native'
 import { getSettingsStorage } from './storage'
@@ -90,7 +91,7 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
   const sectionStyle = { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, borderRadius: 14, padding: 16, gap: 12 } as const
   const headingStyle = { color: colors.text, fontSize: 17, fontWeight: '700' as const }
   const bodyStyle = { color: colors.muted, fontSize: 14, lineHeight: 20 }
-  const buttonStyle = { backgroundColor: colors.button, borderRadius: 10, paddingVertical: 13, paddingHorizontal: 14, alignItems: 'center' as const }
+  const buttonStyle = { backgroundColor: colors.button, borderRadius: 10, paddingVertical: 13, paddingHorizontal: 14, alignItems: 'center' as const }\n  const linkStyle = { color: '#5B9BFF', fontSize: 14, fontWeight: '600' as const }
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.background }} contentContainerStyle={{ padding: 16, gap: 14 }}>
@@ -108,7 +109,7 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
           </View>
           <Switch value={settings.userbgEnabled} onValueChange={value => void update({ userbgEnabled: value })} />
         </View>
-        <Pressable onPress={() => void reload('bg')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
+        <Pressable onPress={() => void Linking.openURL('https://discord.gg/ECg96KZ3Fh')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Banner community (USRBG)</Text></Pressable>\n        <Pressable onPress={() => void reload('bg')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
           <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'bg' ? 'Reloading…' : 'Reload banner collection'}</Text>
         </Pressable>
       </View>
@@ -129,7 +130,7 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
           </View>
           <Switch value={settings.userpfpEnabled} onValueChange={value => void update({ userpfpEnabled: value })} />
         </View>
-        <Pressable onPress={() => void reload('pfp')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
+        <Pressable onPress={() => void Linking.openURL('https://discord.gg/userpfp-1129784704267210844')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Avatar community (UserPFP)</Text></Pressable>\n        <Pressable onPress={() => void reload('pfp')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
           <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'pfp' ? 'Reloading…' : 'Reload avatar collection'}</Text>
         </Pressable>
       </View>
@@ -138,4 +139,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-      }
+    }
