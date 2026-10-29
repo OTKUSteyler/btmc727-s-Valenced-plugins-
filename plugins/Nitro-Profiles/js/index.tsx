@@ -2,63 +2,13 @@ import { getModules } from '@valenced/modules/finders'
 import { withProps } from '@valenced/modules/finders/filters'
 import { instead } from '@valenced/patcher'
 import Settings from './Settings'
+import { clearData, fetchBG, fetchPFP, getBGData } from './data'
+import Settings from './Settings'
 import { getSettingsStorage } from './storage'
-import { DEFAULT_SETTINGS, type PluginSettings, type UserBGData, type UserPFPData } from './types'
-
-let bgData: UserBGData | null = null
-let pfpData: UserPFPData | null = null
-
-const BG_URL = 'https://usrbg.is-hardly.online/users'
-const PFP_URL = 'https://raw.githubusercontent.com/UserPFP/UserPFP/main/source/data.json'
-
-async function fetchBG(): Promise<UserBGData | null> {
-	try {
-		const response = await fetch(BG_URL, { cache: 'no-store' })
-		if (!response.ok) throw new Error(`UserBG request failed: ${response.status}`)
-		bgData = await response.json()
-		return bgData
-	} catch {
-		return null
-	}
-}
-
-async function fetchPFP(): Promise<UserPFPData | null> {
-	try {
-		// GitHub Pages may fail in some Discord client networking contexts; fetch
-		// the canonical raw database and use the same `avatars` map as UserPFP.
-		const response = await fetch(PFP_URL, { cache: 'no-store' })
-		if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`)
-		const data: unknown = await response.json()
-		if (!data || typeof data !== 'object' || !('avatars' in data) ||
-			!data.avatars || typeof data.avatars !== 'object' || Array.isArray(data.avatars)) {
-			throw new Error('Unexpected database format: missing avatars map')
-		}
-		pfpData = data as UserPFPData
-		return pfpData
-	} catch (error) {
-		console.error('[Nitro Profiles] UserPFP database reload failed:', error)
-		return null
-	}
-}
-
-function urlExt(url: string): string {
-	return url.split('.').pop()?.split('?')[0] ?? ''
-}
-
-function getCustomAvatar(id: string, isStatic?: boolean): string | undefined {
-	const avatar = pfpData?.avatars[id]
-	if (!avatar) return undefined
-	if (isStatic && urlExt(avatar) === 'gif') return avatar.replace(/\.gif(?=\?|$)/, '.png')
-	return avatar
-}
+import { DEFAULT_SETTINGS, type PluginSettings } from './types'
 
 interface BannerModule {
 	getUserBannerURL(user: any): any
-}
-
-interface AvatarModule {
-	getUserAvatarURL(user: any, animate?: boolean): any
-	getUserAvatarSource(user: any, animate?: boolean): any
 }
 
 export default plugin({
@@ -70,13 +20,6 @@ export default plugin({
 
 		// Keep this state fresh when settings are changed from the settings screen.
 		const isBGEnabled = () => settings.userbgEnabled
-		const isPFPEnabled = () => settings.userpfpEnabled
-
-		const reloadBG = async () => !!(await fetchBG())
-		const reloadPFP = async () => !!(await fetchPFP())
-
-		// Expose reload handlers to Settings. The Settings screen can call these.
-		;(Settings as any).pluginProps = { onReloadBG: reloadBG, onReloadPFP: reloadPFP }
 
 		await Promise.all([fetchBG(), fetchPFP()])
 
@@ -87,6 +30,7 @@ export default plugin({
 					'getUserBannerURL',
 					(args: any[], original: (...args: any[]) => any) => {
 						const user = args[0]
+						const bgData = getBGData()
 						if (isBGEnabled() && bgData && user?.banner === undefined && user?.id) {
 							const entry = bgData.users[user.id]
 							if (entry) {
@@ -98,43 +42,8 @@ export default plugin({
 				)
 				cleanup(unpatch)
 			}),
-			getModules(withProps<AvatarModule>('getUserAvatarURL', 'getUserAvatarSource'), mod => {
-				const unpatchURL = instead(
-					mod as any,
-					'getUserAvatarURL',
-					(args: any[], original: (...args: any[]) => any) => {
-						const [user, animate] = args
-						if (isPFPEnabled() && user?.id) {
-							const custom = getCustomAvatar(user.id, !animate)
-							if (custom) return custom
-						}
-						return original.apply(mod, args)
-					},
-				)
-
-				const unpatchSource = instead(
-					mod as any,
-					'getUserAvatarSource',
-					(args: any[], original: (...args: any[]) => any) => {
-						const [user, animate] = args
-						const result = original.apply(mod, args)
-						if (!isPFPEnabled() || !user?.id) return result
-
-						const custom = getCustomAvatar(user.id, !animate)
-						if (!custom) return result
-						if (result && typeof result === 'object' && typeof result.uri === 'string') {
-							return { ...result, uri: custom }
-						}
-						if (typeof result === 'number') return { uri: custom }
-						return result
-					},
-				)
-
-				cleanup(unpatchURL, unpatchSource)
-			}),
 			() => {
-				bgData = null
-				pfpData = null
+				clearData()
 			},
 		)
 
