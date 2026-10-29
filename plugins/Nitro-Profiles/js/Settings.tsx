@@ -96,9 +96,14 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.background }} contentContainerStyle={{ padding: 16, gap: 14 }}>
-      <View style={{ gap: 6 }}>
-        <Text style={{ color: colors.text, fontSize: 24, fontWeight: '800' }}>Nitro Profiles</Text>
-        <Text style={bodyStyle}>Personalize profiles with community banner and avatar collections.</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+        {avatarUrl
+          ? <Image source={{ uri: avatarUrl }} style={{ width: 92, height: 92, borderRadius: 22, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.border }} />
+          : <View style={{ width: 92, height: 92, borderRadius: 22, borderWidth: 2, borderColor: colors.border, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: colors.text, fontSize: 28 }}>?</Text></View>}
+        <View style={{ flex: 1, gap: 6 }}>
+          <Text style={{ color: colors.text, fontSize: 24, fontWeight: '800' }}>Nitro Profiles</Text>
+          <Text style={bodyStyle}>Personalize profiles with community banner and avatar collections.</Text>
+        </View>
       </View>
 
       <View style={sectionStyle}>
@@ -118,13 +123,6 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
 
       <View style={sectionStyle}>
         <Text style={headingStyle}>Nitro Avatar</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          {avatarUrl ? <Image source={{ uri: avatarUrl }} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.border }} /> : <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: colors.text, fontSize: 18 }}>?</Text></View>}
-          <View style={{ flex: 1, gap: 3 }}>
-            <Text style={{ color: colors.text, fontSize: 15, fontWeight: '600' }}>Your current Discord avatar</Text>
-            <Text style={bodyStyle}>Preview of the avatar used by your account.</Text>
-          </View>
-        </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <View style={{ flex: 1, gap: 3 }}>
             <Text style={{ color: colors.text, fontSize: 15 }}>Community profile avatars</Text>
@@ -142,4 +140,4 @@ export default function Settings({ onReloadBG, onReloadPFP }: Props) {
       {!!status && <Text accessibilityLiveRegion="polite" style={{ color: colors.muted, fontSize: 14 }}>{status}</Text>}
     </ScrollView>
   )
-    }
+                }
