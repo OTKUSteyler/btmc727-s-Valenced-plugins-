@@ -132,7 +132,7 @@ export default function Settings() {
           </View>
           <Switch value={settings.userpfpEnabled} onValueChange={value => void update({ userpfpEnabled: value })} />
         </View>
-        <Pressable onPress={() => void Linking.openURL('https://discord.gg/userpfp-1129784704267210844')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Avatar community (UserPFP)</Text></Pressable>
+        <Pressable onPress={() => void Linking.openURL('https://userpfp.github.io/UserPFP/#using-userpfp')} style={{ paddingVertical: 4 }}><Text style={linkStyle}>Join the Nitro Avatar community (UserPFP)</Text></Pressable>
         <Pressable onPress={() => void reload('pfp')} disabled={busy !== null} style={({ pressed }) => [buttonStyle, { opacity: busy !== null ? 0.55 : pressed ? 0.75 : 1 }]}>
           <Text style={{ color: colors.buttonText, fontSize: 15, fontWeight: '600' }}>{busy === 'pfp' ? 'Reloading…' : 'Reload avatar collection'}</Text>
         </Pressable>
