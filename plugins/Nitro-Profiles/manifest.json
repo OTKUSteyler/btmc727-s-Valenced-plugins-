@@ -3,7 +3,7 @@
     "id": "com.valenced.nitro-profiles",
     "name": "Nitro-Profiles",
     "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
-    "author": "btmc727",
+    "author": "btmc727 & knifecodez",
     "version": "1.1.2",
     "dependencies": {
         "valenced.api": {
