@@ -200,7 +200,7 @@
       "description": "Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.",
       "author": "btmc727",
       "channels": {
-        "latest": "1.0.1"
+        "latest": "1.0.2"
       },
       "versions": {
         "1.0.0": {
@@ -219,6 +219,19 @@
         "1.0.1": {
           "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.userbg-userpfp@1.0.1.zip",
           "sha256": "0f47131669fa85cf819718539bedeef219c3fa6ec6130f10ffc62c469adf1093",
+          "size": 2055,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        },
+        "1.0.2": {
+          "url": "https://otkusteyler.github.io/btmc727-s-Valenced-plugins-/pool/com.valenced.userbg-userpfp@1.0.2.zip",
+          "sha256": "5eba661ec52c848488d49408910f12ba9b0b3f7daea7ebcc5480ead044a749c3",
           "size": 2055,
           "dependencies": {
             "valenced.api": {
