@@ -1,19 +1,32 @@
-export const LIB_NAME = "Choco’sLib"
-export const LIB_DESCRIPTION =
-  'A cozy home for my Valenced plugins, with links and a quick list of projects.'
-
+// Fill these in to show the matching button / avatar on the lib's page.
+// An empty string hides it.
 export const AUTHOR = {
-  name: 'choccychan aka btmc727',
-  // Set a direct image URL here only if the automatic Discord profile lookup fails.
-  avatarUrl: '',
-  githubUrl: 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-',
-  sponsorUrl: 'https://github.com/sponsors/OTKUSteyler',
-  websiteUrl: 'https://otkusteyler.com',
-} as const
+	name: 'choccychan',
+	// Your Discord user ID. Used to look up your USRBG banner and UserPFP avatar.
+	discordId: '',
+	// Backups, used when UserPFP / USRBG are down, or have nothing for you, or the image fails
+	// to load. Leave empty to fall back to your initial / the plain purple card.
+	avatarUrl: '',
+	bannerUrl: '',
+	sponsorUrl: '',
+	githubUrl: '',
+	websiteUrl: '',
+}
 
-export const PLUGINS_USING_LIB: Array<{ name: string; description: string; version?: string; url?: string }> = [
-  { name: 'Nitro Profiles', description: 'Shows community UserBG banners and UserPFP avatars.', version: '1.1.3', url: 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins/Nitro-Profiles' },
-  { name: 'NoTypingAnimation', description: 'Disables the CPU-intensive typing dots animation.', version: '1.0.6', url: 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins/NoTypingAnimation' },
-  { name: 'GIF Roulette', description: 'Sends a random GIF from your favorites.', version: '1.0.5', url: 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins/GifRoulette' },
-  { name: 'LoginSound', description: 'Plays a custom sound when you log in to Discord.', version: '1.0.1', url: 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins/login-sound' },
+export const LIB_NAME = "choco's lib"
+export const LIB_DESCRIPTION =
+	'A shared library for Valenced plugins. Provides useful utilities, components and more.'
+
+// Plugins in this repository that depend on the lib. Shown on the lib's page.
+export const PLUGINS_USING_LIB = [
+	{ name: 'GIF Roulette', description: 'Sends a random GIF from your favorites.' },
+	{
+		name: 'Nitro-Profiles',
+		description: 'Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.',
+	},
+	{
+		name: 'NoTypingAnimation',
+		description: 'Disables the CPU-intensive typing dots animation.',
+	},
+	{ name: 'LoginSound', description: 'Plays a custom sound when you log in to Discord.' },
 ]
