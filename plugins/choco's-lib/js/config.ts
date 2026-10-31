@@ -17,16 +17,29 @@ export const LIB_NAME = "choco's lib"
 export const LIB_DESCRIPTION =
 	'A shared library for Valenced plugins. Provides useful utilities, components and more.'
 
-// Plugins in this repository that depend on the lib. Shown on the lib's page.
+// Repository the plugins live in. Each plugin below links to its folder here.
+const REPO = 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins'
+
+// Plugins in this repository that depend on the lib. Shown on the lib's page, each as a link.
 export const PLUGINS_USING_LIB = [
-	{ name: 'GIF Roulette', description: 'Sends a random GIF from your favorites.' },
+	{
+		name: 'GIF Roulette',
+		description: 'Sends a random GIF from your favorites.',
+		url: `${REPO}/GifRoulette`,
+	},
 	{
 		name: 'Nitro-Profiles',
 		description: 'Displays custom Discord profile banners from UserBG and custom avatars from UserPFP.',
+		url: `${REPO}/Nitro-Profiles`,
 	},
 	{
 		name: 'NoTypingAnimation',
 		description: 'Disables the CPU-intensive typing dots animation.',
+		url: `${REPO}/NoTypingAnimation`,
 	},
-	{ name: 'LoginSound', description: 'Plays a custom sound when you log in to Discord.' },
+	{
+		name: 'LoginSound',
+		description: 'Plays a custom sound when you log in to Discord.',
+		url: `${REPO}/login-sound`,
+	},
 ]
