@@ -11,7 +11,7 @@ import {
   useColorScheme,
 } from 'react-native'
 import { fetchBG, fetchPFP, getCustomAvatar, getCustomBanner, getLastError } from './data'
-import { getSettingsStorage } from './storage'
+import { getRuntimeSettings, getSettingsStorage, setRuntimeSettings } from './storage'
 import type { PluginSettings } from './types'
 import { DEFAULT_SETTINGS } from './types'
 
@@ -43,7 +43,9 @@ export default function Settings() {
     buttonText: dark ? '#FFFFFF' : '#232428',
   }), [dark])
 
-  const [settings, setSettings] = useState<PluginSettings>(DEFAULT_SETTINGS)
+  // Persisted settings (reactive). The in-memory copy wins so a toggle never flickers back.
+  const stored = getSettingsStorage().use()
+  const settings: PluginSettings = { ...DEFAULT_SETTINGS, ...(stored ?? {}), ...getRuntimeSettings() }
   const [busy, setBusy] = useState<'bg' | 'pfp' | null>(null)
   const [status, setStatus] = useState('')
   const [currentUser, setCurrentUser] = useState<any>()
@@ -51,12 +53,7 @@ export default function Settings() {
   const [bgVersion, setBgVersion] = useState(0)
 
   useEffect(() => {
-    let alive = true
-    getSettingsStorage().get().then(value => {
-      if (alive) setSettings({ ...DEFAULT_SETTINGS, ...value })
-    }).catch(() => {})
     setCurrentUser(resolveCurrentUser())
-    return () => { alive = false }
   }, [])
 
   // Prefer the UserPFP avatar when it's enabled and the user has one; otherwise use the Discord avatar.
@@ -73,8 +70,7 @@ export default function Settings() {
   }, [currentUser, settings.userbgEnabled, bgVersion])
 
   async function update(patch: Partial<PluginSettings>) {
-    const next = { ...settings, ...patch }
-    setSettings(next)
+    setRuntimeSettings(patch) // patches pick this up immediately
     try {
       await getSettingsStorage().set(patch)
     } catch {

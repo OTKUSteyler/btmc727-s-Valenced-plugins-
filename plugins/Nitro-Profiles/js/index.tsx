@@ -3,8 +3,7 @@ import { withProps } from '@valenced/modules/finders/filters'
 import { instead } from '@valenced/patcher'
 import { clearData, fetchBG, fetchPFP, getBGData, getCustomAvatar } from './data'
 import Settings from './Settings'
-import { getSettingsStorage } from './storage'
-import { DEFAULT_SETTINGS, type PluginSettings } from './types'
+import { getRuntimeSettings, loadRuntimeSettings } from './storage'
 
 interface BannerModule {
 	getUserBannerURL(user: any): any
@@ -19,12 +18,11 @@ export default plugin({
 	SettingsComponent: Settings,
 
 	async start({ cleanup }) {
-		const storage = getSettingsStorage()
-		let settings: PluginSettings = { ...DEFAULT_SETTINGS, ...(await storage.get()) }
+		await loadRuntimeSettings()
 
-		// Keep this state fresh when settings are changed from the settings screen.
-		const isBGEnabled = () => settings.userbgEnabled
-		const isPFPEnabled = () => settings.userpfpEnabled
+		// Read live on every call, so toggles in the settings screen apply immediately.
+		const isBGEnabled = () => getRuntimeSettings().userbgEnabled
+		const isPFPEnabled = () => getRuntimeSettings().userpfpEnabled
 
 		await Promise.all([fetchBG(), fetchPFP()])
 
@@ -85,9 +83,5 @@ export default plugin({
 				clearData()
 			},
 		)
-
-		// Storage updates are wired by the Settings component. Keep runtime state
-		// synchronized if your Valenced storage helper emits updates; otherwise
-		// restart the plugin after changing a toggle.
 	},
 })
