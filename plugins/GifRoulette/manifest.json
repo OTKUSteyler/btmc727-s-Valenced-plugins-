@@ -4,12 +4,20 @@
   "name": "GIF Roulette",
   "description": "Sends a random GIF from your favorites.",
   "author": "OTKUSteyler aka btmc727",
-  "contributors": ["k1ng_op <641266820187160576> (https://github.com/k1ng0p \"GitHub\")"],
+  "contributors": [
+    "k1ng_op <641266820187160576> (https://github.com/k1ng0p \"GitHub\")"
+  ],
   "version": "1.0.5",
-  "dependencies": { 
+  "dependencies": {
     "com.otkusteyler.lib": {
-    "valenced.api": { "version": ">=1 <2" },
-    "discord": { "version": "*" }
+      "version": ">=1.0.0 <2"
+    },
+    "valenced.api": {
+      "version": ">=1 <2"
+    },
+    "discord": {
+      "version": "*"
+    }
   },
   "dist": {
     "script": "index.js"
