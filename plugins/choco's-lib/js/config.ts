@@ -18,7 +18,7 @@ export const LIB_DESCRIPTION =
 	'A cozy home for my Valenced plugins, with links and a quick list of projects.'
 
 // Repository the plugins live in. Each plugin below links to its folder here.
-const REPO = 'https://github.com/OTKUSteyler/btmc727-s-Valenced-plugins-/tree/main/plugins'
+const REPO = 'https://github.com/OTKUSteyler/chocos-plugins/tree/main/plugins'
 
 // Plugins in this repository that depend on the lib, shown on the lib's page.
 // Update `version` by hand when you release a new version of a plugin.
