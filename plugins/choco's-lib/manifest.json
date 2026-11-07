@@ -4,7 +4,7 @@
   "name": "choco's lib",
   "description": "A shared library for Valenced plugins. Provides useful utilities, components and more.",
   "author": "choccychan aka btmc727 <554071670143451176>",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "icon": "HomeIcon",
   "dependencies": {
     "valenced.api": {
