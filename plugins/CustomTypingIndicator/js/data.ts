@@ -1,17 +1,67 @@
 // Typing indicator data: the shared registry of plugin users (usrbg-style,
 // public read-only JSON keyed by Discord user ID) plus the local user's own entry.
 
-export type TypingAnimation = 'wave' | 'bounce' | 'pulse' | 'none'
+export type TypingAnimation = 'wave' | 'bounce' | 'pulse' | 'none' | 'custom'
+
+/**
+ * A user-designed animation. Pure data (no code), so it is safe to receive from the
+ * registry: every value is clamped in `sanitizeCustom`.
+ * Each emoji moves from rest to the "peak" values and back, staggered left to right.
+ */
+export interface CustomAnim {
+	moveX: number // px at peak, -20..20
+	moveY: number // px at peak, -20..20
+	rotate: number // degrees at peak, -45..45
+	scale: number // scale at peak, 0.5..2
+	opacity: number // opacity at peak, 0.2..1
+	duration: number // ms for rest -> peak, 100..1500
+	stagger: number // ms between emojis, 0..500
+	pause: number // ms rest between loops, 0..2000
+	easing: 'smooth' | 'linear' | 'bounce'
+}
+
+export const DEFAULT_CUSTOM: CustomAnim = {
+	moveX: 0,
+	moveY: -6,
+	rotate: 0,
+	scale: 1,
+	opacity: 1,
+	duration: 350,
+	stagger: 120,
+	pause: 400,
+	easing: 'smooth',
+}
 
 export interface TypingEntry {
 	/** Up to 3 emoji image URLs (https only). */
 	emojis: string[]
 	animation: TypingAnimation
+	/** Only used when animation === 'custom'. */
+	custom?: CustomAnim
 	/** Text shown after the display name, e.g. "is venting..." */
 	text: string
 }
 
-export const ANIMATIONS: TypingAnimation[] = ['wave', 'bounce', 'pulse', 'none']
+export const ANIMATIONS: TypingAnimation[] = ['wave', 'bounce', 'pulse', 'none', 'custom']
+
+const clamp = (v: unknown, min: number, max: number, fallback: number) =>
+	typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fallback
+
+export function sanitizeCustom(raw: any): CustomAnim {
+	const d = DEFAULT_CUSTOM
+	const r = raw && typeof raw === 'object' ? raw : {}
+	return {
+		moveX: clamp(r.moveX, -20, 20, d.moveX),
+		moveY: clamp(r.moveY, -20, 20, d.moveY),
+		rotate: clamp(r.rotate, -45, 45, d.rotate),
+		scale: clamp(r.scale, 0.5, 2, d.scale),
+		opacity: clamp(r.opacity, 0.2, 1, d.opacity),
+		duration: clamp(r.duration, 100, 1500, d.duration),
+		stagger: clamp(r.stagger, 0, 500, d.stagger),
+		pause: clamp(r.pause, 0, 2000, d.pause),
+		easing: ['smooth', 'linear', 'bounce'].includes(r.easing) ? r.easing : d.easing,
+	}
+}
 export const MAX_TEXT = 32
 export const MAX_EMOJIS = 3
 
@@ -36,7 +86,9 @@ export function sanitize(raw: any): TypingEntry | null {
 	const animation: TypingAnimation = ANIMATIONS.includes(raw.animation) ? raw.animation : 'wave'
 
 	if (!emojis.length && !text) return null
-	return { emojis, animation, text }
+	return animation === 'custom'
+		? { emojis, animation, text, custom: sanitizeCustom(raw.custom) }
+		: { emojis, animation, text }
 }
 
 export async function fetchRegistry(): Promise<void> {
@@ -85,7 +137,7 @@ export function surprise(emojiPool: string[]): TypingEntry {
 	const shuffled = [...emojiPool].sort(() => Math.random() - 0.5)
 	return {
 		emojis: shuffled.slice(0, MAX_EMOJIS),
-		animation: pick(ANIMATIONS.filter(a => a !== 'none')),
+		animation: pick(ANIMATIONS.filter(a => a !== 'none' && a !== 'custom')),
 		text: pick(SURPRISE_TEXTS),
 	}
 }
