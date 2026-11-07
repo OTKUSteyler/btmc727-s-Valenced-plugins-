@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { Image, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native'
-import { ANIMATIONS, MAX_EMOJIS, MAX_TEXT, exportConfig, sanitize, surprise } from './data'
+import {
+	ANIMATIONS,
+	DEFAULT_CUSTOM,
+	MAX_EMOJIS,
+	MAX_TEXT,
+	exportConfig,
+	sanitize,
+	sanitizeCustom,
+	surprise,
+} from './data'
+import type { CustomAnim } from './data'
 import TypingStrip from './components/TypingStrip'
 import { hasRealNitroTyping, runtime } from './state'
 import type { TypingEntry } from './data'
@@ -13,6 +23,36 @@ import type { ComponentProps } from 'react'
 export type TypingSettingsProps = ComponentProps<PluginSettingsComponent<ApiOptions>>
 
 const DEFAULT_MINE: TypingEntry = { emojis: [], animation: 'wave', text: 'is typing...' }
+
+// Every knob of the custom animation. Values are clamped again by sanitizeCustom on save.
+const KNOBS: { key: keyof CustomAnim; label: string; step: number; min: number; max: number }[] = [
+	{ key: 'moveX', label: 'Move X (px)', step: 1, min: -20, max: 20 },
+	{ key: 'moveY', label: 'Move Y (px)', step: 1, min: -20, max: 20 },
+	{ key: 'rotate', label: 'Rotate (°)', step: 5, min: -45, max: 45 },
+	{ key: 'scale', label: 'Scale', step: 0.1, min: 0.5, max: 2 },
+	{ key: 'opacity', label: 'Opacity', step: 0.1, min: 0.2, max: 1 },
+	{ key: 'duration', label: 'Speed (ms)', step: 50, min: 100, max: 1500 },
+	{ key: 'stagger', label: 'Stagger (ms)', step: 20, min: 0, max: 500 },
+	{ key: 'pause', label: 'Pause (ms)', step: 100, min: 0, max: 2000 },
+]
+const EASINGS: CustomAnim['easing'][] = ['smooth', 'linear', 'bounce']
+
+function Stepper({ label, value, onChange }: { label: string; value: number; onChange(delta: number): void }) {
+	return (
+		<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+			<Text style={{ color: 'white' }}>{label}</Text>
+			<View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+				<Pressable onPress={() => onChange(-1)} style={{ padding: 8, borderWidth: 1, borderColor: '#3a3a4a' }}>
+					<Text style={{ color: 'white' }}>−</Text>
+				</Pressable>
+				<Text style={{ color: 'white', minWidth: 44, textAlign: 'center' }}>{Math.round(value * 10) / 10}</Text>
+				<Pressable onPress={() => onChange(1)} style={{ padding: 8, borderWidth: 1, borderColor: '#3a3a4a' }}>
+					<Text style={{ color: 'white' }}>+</Text>
+				</Pressable>
+			</View>
+		</View>
+	)
+}
 
 // TODO: swap for the clipboard helper your other plugins use.
 async function copy(text: string) {
@@ -87,7 +127,13 @@ export function SettingsComponent(props: TypingSettingsProps) {
 				{ANIMATIONS.map(a => (
 					<Pressable
 						key={a}
-						onPress={() => setMine({ ...mine, animation: a })}
+						onPress={() =>
+							setMine({
+								...mine,
+								animation: a,
+								custom: a === 'custom' ? (mine.custom ?? DEFAULT_CUSTOM) : mine.custom,
+							})
+						}
 						style={{
 							padding: 10,
 							borderWidth: 1,
@@ -98,6 +144,53 @@ export function SettingsComponent(props: TypingSettingsProps) {
 					</Pressable>
 				))}
 			</View>
+
+			{mine.animation === 'custom' && (
+				<View style={{ gap: 10, borderWidth: 1, borderColor: '#3a3a4a', padding: 12 }}>
+					<Text style={{ color: '#b9bbbe', fontSize: 12 }}>
+						Each emoji moves from rest to these values and back. The preview above updates live.
+					</Text>
+					{KNOBS.map(k => {
+						const current = (mine.custom ?? DEFAULT_CUSTOM)[k.key] as number
+						return (
+							<Stepper
+								key={k.key}
+								label={k.label}
+								value={current}
+								onChange={d =>
+									setMine({
+										...mine,
+										custom: sanitizeCustom({
+											...(mine.custom ?? DEFAULT_CUSTOM),
+											[k.key]: Math.min(k.max, Math.max(k.min, current + d * k.step)),
+										}),
+									})
+								}
+							/>
+						)
+					})}
+					<View style={{ flexDirection: 'row', gap: 8 }}>
+						{EASINGS.map(e => (
+							<Pressable
+								key={e}
+								onPress={() =>
+									setMine({
+										...mine,
+										custom: sanitizeCustom({ ...(mine.custom ?? DEFAULT_CUSTOM), easing: e }),
+									})
+								}
+								style={{
+									padding: 10,
+									borderWidth: 1,
+									borderColor: (mine.custom ?? DEFAULT_CUSTOM).easing === e ? '#9b7bd8' : '#3a3a4a',
+								}}
+							>
+								<Text style={{ color: 'white', textTransform: 'capitalize' }}>{e}</Text>
+							</Pressable>
+						))}
+					</View>
+				</View>
+			)}
 
 			<Text style={{ color: 'white', fontSize: 18 }}>Text</Text>
 			<TextInput
@@ -136,4 +229,4 @@ export function SettingsComponent(props: TypingSettingsProps) {
 			</Text>
 		</ScrollView>
 	)
-}
+			}
